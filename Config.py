@@ -1,0 +1,1 @@
+# configuración (DB, variables, etc.)
