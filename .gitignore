@@ -1,0 +1,17 @@
+# Variables de entorno
+.env
+
+# Caché de Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Archivos de sistema
+.DS_Store
+Thumbs.db
+
+# IDEs
+.vscode/
+
+# Logs
+*.log
