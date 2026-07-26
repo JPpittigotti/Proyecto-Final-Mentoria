@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}MVP Mentoria{% endblock %}</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: #f0f2f5;
+      color: #1a1a2e;
+      min-height: 100vh;
+    }
+
+    /* ── Navbar ── */
+    nav {
+      background: #1a1a2e;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 28px;
+      height: 56px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 8px rgba(0,0,0,.3);
+    }
+    nav .brand {
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: .02em;
+      color: #fff;
+      text-decoration: none;
+    }
+    nav .brand span { color: #4db8ff; }
+    nav .links { display: flex; gap: 4px; align-items: center; }
+    nav a {
+      color: #b0b8d0;
+      text-decoration: none;
+      padding: 8px 14px;
+      border-radius: 6px;
+      font-size: 14px;
+      transition: background .15s, color .15s;
+    }
+    nav a:hover, nav a.active {
+      background: rgba(255,255,255,.1);
+      color: #fff;
+    }
+    nav .usuario {
+      font-size: 13px;
+      color: #7a8aaa;
+      margin-right: 8px;
+    }
+    nav .btn-logout {
+      background: #c0392b;
+      color: #fff;
+      border: none;
+      padding: 7px 14px;
+      border-radius: 6px;
+      font-size: 13px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background .15s;
+    }
+    nav .btn-logout:hover { background: #a93226; }
+
+    /* ── Layout principal ── */
+    .page { max-width: 1100px; margin: 0 auto; padding: 32px 20px 60px; }
+
+    /* ── Alertas flash ── */
+    .flash { padding: 12px 18px; border-radius: 8px; margin-bottom: 20px; font-size: 14px; }
+    .flash.ok    { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+    .flash.error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+
+    /* ── Tarjetas ── */
+    .card {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 1px 6px rgba(0,0,0,.08);
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+    .card h2 { font-size: 18px; margin-bottom: 16px; color: #1a1a2e; }
+
+    /* ── Tabla ── */
+    table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    th {
+      background: #1a1a2e;
+      color: #fff;
+      text-align: left;
+      padding: 11px 14px;
+      font-weight: 600;
+      font-size: 13px;
+      letter-spacing: .03em;
+    }
+    td { padding: 11px 14px; border-bottom: 1px solid #eef0f4; vertical-align: middle; }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: #f8f9fc; }
+
+    /* ── Botones ── */
+    .btn {
+      display: inline-block;
+      padding: 8px 16px;
+      border-radius: 7px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      border: none;
+      transition: opacity .15s;
+    }
+    .btn:hover { opacity: .85; }
+    .btn-primary   { background: #2c6fad; color: #fff; }
+    .btn-secondary { background: #6c757d; color: #fff; }
+    .btn-danger    { background: #c0392b; color: #fff; }
+    .btn-sm        { padding: 5px 11px; font-size: 12px; }
+
+    /* ── Formularios ── */
+    .form-group { margin-bottom: 18px; }
+    .form-group label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; color: #444; }
+    .form-group input,
+    .form-group select {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #d0d5dd;
+      border-radius: 8px;
+      font-size: 14px;
+      outline: none;
+      transition: border-color .15s;
+    }
+    .form-group input:focus,
+    .form-group select:focus { border-color: #2c6fad; }
+
+    /* ── Filtros ── */
+    .filtros {
+      display: flex;
+      gap: 10px;
+      align-items: flex-end;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+    .filtros .form-group { margin-bottom: 0; }
+    .filtros input, .filtros select { width: auto; min-width: 160px; }
+
+    /* ── Badge nivel alerta ── */
+    .badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .badge-normal  { background: #d4edda; color: #155724; }
+    .badge-alerta  { background: #fff3cd; color: #856404; }
+    .badge-critico { background: #f8d7da; color: #721c24; }
+    .badge-quiebre { background: #1a1a2e; color: #fff; }
+
+    /* ── Stats cards ── */
+    .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 18px; margin-bottom: 28px; }
+    .stat-card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 22px 24px;
+      box-shadow: 0 1px 6px rgba(0,0,0,.08);
+      border-left: 4px solid #2c6fad;
+    }
+    .stat-card.warn { border-left-color: #e67e22; }
+    .stat-card .label { font-size: 12px; color: #6c757d; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; margin-bottom: 8px; }
+    .stat-card .value { font-size: 32px; font-weight: 700; color: #1a1a2e; }
+
+    /* ── Formulario de 2 columnas ── */
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 24px; }
+    .form-actions { margin-top: 8px; display: flex; gap: 10px; }
+
+    /* ── Checkbox ── */
+    .check-row { display: flex; align-items: center; gap: 10px; margin-bottom: 18px; }
+    .check-row input[type=checkbox] { width: 18px; height: 18px; cursor: pointer; }
+    .check-row label { font-size: 14px; cursor: pointer; font-weight: 500; }
+
+    /* ── Página título ── */
+    .page-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
+    .page-header h1 { font-size: 22px; font-weight: 700; }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a class="brand" href="/dashboard">MVP<span>Mentoria</span></a>
+  <div class="links">
+    <a href="/dashboard" {% if request.path == '/dashboard' %}class="active"{% endif %}>Inicio</a>
+    <a href="/productos"  {% if '/productos' in request.path %}class="active"{% endif %}>Productos</a>
+    <a href="/inventario" {% if '/inventario' in request.path %}class="active"{% endif %}>Inventario</a>
+  </div>
+  <div style="display:flex;align-items:center;gap:12px;">
+    <span class="usuario">{{ usuario }}</span>
+    <a class="btn-logout" href="/logout">Salir</a>
+  </div>
+</nav>
+
+<div class="page">
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% for cat, msg in messages %}
+      <div class="flash {{ cat }}">{{ msg }}</div>
+    {% endfor %}
+  {% endwith %}
+
+  {% block content %}{% endblock %}
+</div>
+
+</body>
+</html>
