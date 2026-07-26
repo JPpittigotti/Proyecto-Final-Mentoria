@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% block title %}Productos — MVP Mentoria{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1>Catálogo de productos</h1>
+  <a href="/productos/nuevo" class="btn btn-primary">+ Nuevo producto</a>
+</div>
+
+<!-- Filtros -->
+<form method="GET" action="/productos">
+  <div class="filtros">
+    <div class="form-group">
+      <label>Buscar</label>
+      <input type="text" name="q" value="{{ busqueda }}" placeholder="Nombre del producto...">
+    </div>
+    <div class="form-group">
+      <label>Categoría</label>
+      <select name="categoria">
+        <option value="">Todas</option>
+        {% for cat in categorias %}
+          <option value="{{ cat }}" {% if cat == categoria_sel %}selected{% endif %}>{{ cat }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <button type="submit" class="btn btn-primary">Filtrar</button>
+    <a href="/productos" class="btn btn-secondary">Limpiar</a>
+  </div>
+</form>
+
+<div class="card" style="padding:0;overflow:hidden;">
+  {% if productos %}
+  <table>
+    <thead>
+      <tr>
+        <th>SKU</th>
+        <th>Nombre</th>
+        <th>Categoría</th>
+        <th>Precio lista</th>
+        <th>Costo</th>
+        <th>Stock mín.</th>
+        <th>Perecedero</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for p in productos %}
+      <tr>
+        <td><strong>{{ p.sku }}</strong></td>
+        <td>{{ p.nombre }}</td>
+        <td>{{ p.categoria }}</td>
+        <td>B/. {{ "%.2f"|format(p.precio_lista) }}</td>
+        <td>B/. {{ "%.2f"|format(p.costo_unitario) }}</td>
+        <td>{{ p.stock_minimo }}</td>
+        <td>
+          {% if p.perecedero %}
+            <span class="badge badge-alerta">Sí</span>
+          {% else %}
+            <span class="badge badge-normal">No</span>
+          {% endif %}
+        </td>
+        <td>
+          <a href="/productos/editar/{{ p.sku }}" class="btn btn-secondary btn-sm">Editar</a>
+          <form method="POST" action="/productos/eliminar/{{ p.sku }}" style="display:inline;"
+                onsubmit="return confirm('¿Eliminar {{ p.nombre }}?')">
+            <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <div style="padding:40px;text-align:center;color:#888;">
+    No se encontraron productos con ese filtro.
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

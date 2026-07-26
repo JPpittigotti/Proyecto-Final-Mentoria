@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Inicio — MVP Mentoria{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1>Panel de control</h1>
+</div>
+
+<div class="stats">
+  <div class="stat-card">
+    <div class="label">Productos en catálogo</div>
+    <div class="value">{{ total_productos }}</div>
+  </div>
+  <div class="stat-card">
+    <div class="label">Sucursales</div>
+    <div class="value">{{ total_sucursales }}</div>
+  </div>
+  <div class="stat-card">
+    <div class="label">Tickets registrados</div>
+    <div class="value">{{ "{:,}".format(total_tickets) }}</div>
+  </div>
+  <div class="stat-card warn">
+    <div class="label">Alertas de inventario</div>
+    <div class="value">{{ alertas_inventario }}</div>
+  </div>
+</div>
+
+<div class="card">
+  <h2>Accesos rápidos</h2>
+  <div style="display:flex;gap:12px;flex-wrap:wrap;">
+    <a href="/productos"        class="btn btn-primary">Ver productos</a>
+    <a href="/productos/nuevo"  class="btn btn-secondary">Nuevo producto</a>
+    <a href="/inventario"       class="btn btn-primary">Ver inventario</a>
+    <a href="/inventario?alerta=Critico" class="btn btn-danger">Ver inventario crítico</a>
+  </div>
+</div>
+
+<div class="card">
+  <h2>Sobre este sistema</h2>
+  <p style="color:#555;font-size:14px;line-height:1.7;">
+    MVP desarrollado por el equipo de Desarrollo de Software.<br>
+    Base de datos: <strong>MongoDB</strong> · Backend: <strong>Flask (Python)</strong><br>
+    Módulos activos: Login · Gestión de Productos · Gestión de Inventario
+  </p>
+</div>
+{% endblock %}
